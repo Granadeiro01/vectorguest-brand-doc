@@ -14,6 +14,7 @@ The canonical example the skill mimics is `05_Integrations_Map`. New documents c
 - **Prose voice** — direct, declarative, zero hedging, British spelling, em-dashes as precision punctuation.
 - **Reasoning flow** — why-it-matters → landscape table → critical few → important rest → discipline → invariant callout → summary reference → status → one-paragraph close.
 - **Formatting specifics** — Arial throughout, Roboto Mono for code, 1.15 line spacing, US Letter with 1.0-inch margins.
+- **Diagrams and plots** — Mermaid by default for anything Mermaid can express; rendered JPEG (≥1600px, Arial, monochrome + TSS-red accent) as fallback. No ASCII art, no raw `dot` / `plantuml` / `d2` source, no `[diagram: …]` placeholders.
 
 ## Install
 
