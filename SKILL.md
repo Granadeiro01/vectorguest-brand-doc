@@ -180,7 +180,47 @@ The canon switches to monospace in two situations, both via **Roboto Mono** (nev
 1. **Inline code identifiers** — field names, API parameters, account names. Roboto Mono, 11pt, color `#188038`. Examples: `amount`, `application_fee_amount`, `charge.succeeded`, `pending_card_holds`.
 2. **Code blocks** — implemented as a **single-cell full-width table** with shading `#f4f4f4`, 0.75pt `#e5e5e5` border, cell padding 160/200/160/200 dxa. Code at 9pt Roboto Mono, one paragraph per line, tabs preserved for indentation. There is no fenced ``` markdown — every code block lives inside its own light-grey table cell.
 
-## 10. Pre-flight checklist (run before declaring done)
+## 10. Diagrams, plots, and visual rendering
+
+Every diagram, graph, or plot in a VectorGuest doc must render as a visual — never as ASCII art, pseudocode, or a text sketch. Two acceptable formats, in order of preference:
+
+### Mermaid (default)
+
+Use Mermaid for anything Mermaid can express cleanly: flowcharts, sequence diagrams, state machines, class diagrams, ER diagrams, Gantt charts, timelines, mindmaps, journey maps, pie charts. Mermaid renders natively in GitHub, Obsidian, and most modern doc viewers, and stays editable as code — which matters because every VectorGuest doc is a living document.
+
+In markdown source: use a fenced ` ```mermaid ` block. In .docx output: pre-render the Mermaid to a clean PNG/JPEG (e.g. with `mmdc -i diagram.mmd -o diagram.jpg -t neutral -b transparent --width 1600`) and embed as an image — Word does not render Mermaid natively. Keep the `.mmd` source alongside the doc so the diagram stays editable.
+
+Mermaid styling discipline: prefer the `neutral` or default theme, override link/node colours to monochrome black for body diagrams, reserve `#c0303a` (TSS red) for the one or two nodes the eye should land on first. No gradients, no shadows, no emoji.
+
+### Rendered JPEG (fallback only)
+
+Escalate to a rendered JPEG when Mermaid genuinely can't express the diagram cleanly: custom-styled architecture diagrams with non-standard layout, multi-layer system maps with depth/grouping that Mermaid mangles, and real-data charts (use matplotlib / plotly / d3, render server-side, export as JPEG). Requirements:
+
+- **Resolution**: minimum 1600px wide for full-width figures, 300 DPI for any doc that may be printed.
+- **Typography**: Arial throughout — including all axis labels, legends, and annotations. No Calibri, no Helvetica, no system-default fonts.
+- **Colour**: black text on white or transparent background. `#c0303a` (TSS red) as the single accent for the one element that carries the point. Greyscale (`#888888`, `#cccccc`) for supporting elements.
+- **Layout in the .docx**: centred, full-content-width (no wider than 9360 dxa), with a one-line caption underneath in italic 10pt `#555555` — same style as the subtitle.
+- **Source artefact**: keep the rendering script (`build_chart.py`, `build_diagram.mmd`) checked in next to the doc, so the figure is regenerable when data or design changes.
+
+### What's not acceptable
+
+The skill should detect and convert all of these on sight:
+
+- ASCII art boxes-and-arrows inside code blocks.
+- Bullet-list approximations of a flow ("first X happens, then Y, then Z").
+- Markdown tables pretending to be diagrams.
+- Plain-text "diagrams" stuffed inside callout boxes.
+- Raw Graphviz `dot { ... }`, PlantUML, D2, or other DSL source pasted as a code block with no rendered output.
+- Screenshots of whiteboard sketches, photos of paper diagrams, or any rasterised image at < 1200px wide.
+
+### Conversion procedure when revising an existing draft
+
+1. Scan the source for: ASCII art, ` ```dot `, ` ```plantuml `, ` ```d2 `, any `graph LR` / `flowchart TD` outside a `mermaid` fenced block, and prose stubs like `[diagram: ...]` or `[chart goes here]`.
+2. For each one: rewrite as Mermaid if possible. If not, render to JPEG per the spec above and replace the source with an image embed plus caption.
+3. Keep both the editable source (`.mmd`, `.py`) and the rendered output in the doc's folder.
+4. Never leave a diagram as "TODO — draw later" without at least a Mermaid skeleton in place; that becomes a `TODO —` callout instead, with the diagram spec written out.
+
+## 11. Pre-flight checklist (run before declaring done)
 
 - Title appears twice at the top (Title style + bold paragraph), no breadcrumb above.
 - Italic grey subtitle in the canonical short-clause-plus-payoff register.
@@ -195,6 +235,7 @@ The canon switches to monospace in two situations, both via **Roboto Mono** (nev
 - Em-dashes used as precision punctuation, not as comma substitutes.
 - Section order follows §7: why-it-matters → landscape table → critical few (H2) → important rest (H3) → supporting (bullets) → discipline → invariant callout → summary reference → status → one-paragraph summary.
 - Closing summary paragraph names the categories, the critical items, and the discipline in one sweep.
+- **Every diagram, graph, and plot renders as a visual** — Mermaid by default, JPEG (≥1600px, Arial, monochrome + TSS-red accent) as fallback. Zero ASCII art, zero raw `dot` / `plantuml` / `d2` source, zero "[diagram: …]" placeholders. Editable source (`.mmd`, `.py`) checked in alongside the doc.
 
 ## Files in this skill
 
